@@ -1,4 +1,4 @@
-package com.andreivan.rest.webservices.restfulwebservices.basic.auth;
+package com.andreivan.rest.basic.auth;
 
 public class AuthenticationBean {
 
