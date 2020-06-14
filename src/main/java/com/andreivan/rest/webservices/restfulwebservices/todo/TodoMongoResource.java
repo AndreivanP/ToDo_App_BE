@@ -11,46 +11,40 @@ import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
-public class TodoJpaResource {
+public class TodoMongoResource {
 
     @Autowired
-    private TodoHardcodedService todoService;
-
-    @Autowired
-    private TodoJpaRepository todoJpaRepository;
+    private TodoMongoRepository todoMongoRepository;
 
     @GetMapping("jpa/users/{username}/todos")
     public List<Todo> getAllTodos(@PathVariable String username) {
-        return todoJpaRepository.findByUsername(username);
+        return todoMongoRepository.findByUsername(username);
     }
 
     @GetMapping("jpa/users/{username}/todos/{id}")
-    public Todo getTodo(@PathVariable String username, @PathVariable long id) {
-        return todoJpaRepository.findById(id).get();
+    public List<Todo> getTodo(@PathVariable String username, @PathVariable String id) {
+        return todoMongoRepository.findStringById(id);
     }
 
     @DeleteMapping("jpa/users/{username}/todos/{id}")
-    public ResponseEntity<Void> deleteTodo(@PathVariable String username, @PathVariable long id) {
-        System.out.println("idzao "+ id);
-        System.out.println("user "+ username);
-        todoJpaRepository.deleteById(id);
+    public ResponseEntity<Void> deleteTodo(@PathVariable String username, @PathVariable String id) {
+        todoMongoRepository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("jpa/users/{username}/todos/{id}")
-    public ResponseEntity<Todo> updateTodo(@PathVariable String username, @PathVariable long id, @RequestBody Todo todo) {
+    public ResponseEntity<Todo> updateTodo(@PathVariable String username, @PathVariable(value="id") String id, @RequestBody Todo todo) {
         todo.setUsername(username);
-        Todo todoUpdated = todoJpaRepository.save(todo);
+        todoMongoRepository.save(todo);
         return new ResponseEntity<Todo>(todo, HttpStatus.OK);
     }
 
     @PostMapping("jpa/users/{username}/todos")
     public ResponseEntity<Void> createTodo(@PathVariable String username, @RequestBody Todo todo) {
         todo.setUsername(username);
-        Todo createdTodo = todoJpaRepository.save(todo);
+        todo.setId();
+        Todo createdTodo = todoMongoRepository.save(todo);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(createdTodo.getId()).toUri();
         return ResponseEntity.created(uri).build();
     }
-
-
 }
