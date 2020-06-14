@@ -1,16 +1,18 @@
 package com.andreivan.rest.webservices.restfulwebservices.todo;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.util.Date;
 import java.util.Objects;
+import java.util.Random;
 
-@Entity
+@Document(collection = "todo")
 public class Todo {
     @Id
-    @GeneratedValue
-    private Long id;
+    private String id;
     private String username;
     private String description;
     private Date targetDate;
@@ -20,21 +22,22 @@ public class Todo {
 
     }
 
-    public Todo(Long id, String username, String description, Date targetDate, boolean isDone) {
+    public Todo(String username, String description, Date targetDate, boolean isDone) {
         //super();
-        this.id = id;
+//        this.id = id;
         this.username = username;
         this.description = description;
         this.targetDate = targetDate;
         this.isDone = isDone;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setId() {
+        RandomString randomString = new RandomString();
+        this.id = randomString.nextString();
     }
 
     public String getUsername() {
